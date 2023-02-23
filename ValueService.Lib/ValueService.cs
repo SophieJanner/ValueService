@@ -40,10 +40,9 @@ namespace ValueServiceLib {
             
             if(decimal.TryParse(value, out decimal result)) { return result; }
 
-            char postFactor = value.Last();
+            char postFactor = value.FirstOrDefault(Char.IsLetter);
 
-            if (decimal.TryParse(value.Remove(value.IndexOf(postFactor)), out decimal number)) return Pow10PostFactor(number, postFactor.ToString());
-
+            if (decimal.TryParse(value.Replace(postFactor.ToString(), ""), out decimal number)) return Pow10PostFactor(number, postFactor.ToString());
             throw new InvalidCastException();
         }
 
