@@ -15,6 +15,24 @@ namespace ValueServiceLib {
     /// </summary>
     public class ValueService : IValueService {
 
+
+        public ValueService()
+        {
+            PostFactors = new List<IPostFactor>
+            {
+                new PostFactor { Text = "milli", TextShort = "m", Potenz = -3 },
+                new PostFactor { Text = "mikro", TextShort = "µ", Potenz = -6 },
+                new PostFactor { Text = "nano", TextShort = "n", Potenz = -9 },
+                new PostFactor { Text = "pico", TextShort = "p", Potenz = -12 },
+                new PostFactor { Text = "kilo", TextShort = "k", Potenz = 3 },
+                new PostFactor { Text = "Mega", TextShort = "M", Potenz = 6 },
+                new PostFactor { Text = "Giga", TextShort = "G", Potenz = 9 },
+                new PostFactor { Text = "Tera", TextShort = "T", Potenz = 12 },
+                new PostFactor { Text = "Peta", TextShort = "P", Potenz = 15 },
+                new PostFactor { Text = "Exa", TextShort = "E", Potenz = 18 }
+            };
+        }
+
         public List<IPostFactor> PostFactors { get; set; }
 
         public decimal GetDecimal(string value) {
@@ -40,5 +58,12 @@ namespace ValueServiceLib {
         public decimal Pow10PostFactor(decimal number, string PostFactor) {
             throw new NotImplementedException();
         }
+    }
+
+    public class PostFactor : IPostFactor
+    {
+        public string Text { get; set; }
+        public string TextShort { get; set; }
+        public int Potenz { get; set; }
     }
 }
