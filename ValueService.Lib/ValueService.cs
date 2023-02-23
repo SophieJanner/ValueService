@@ -36,7 +36,15 @@ namespace ValueServiceLib {
         public List<IPostFactor> PostFactors { get; set; }
 
         public decimal GetDecimal(string value) {
-            throw new NotImplementedException();
+            value = value.Trim().Replace('.', ',');
+            
+            if(decimal.TryParse(value, out decimal result)) { return result; }
+
+            char postFactor = value.Last();
+
+            if (decimal.TryParse(value.Remove(value.IndexOf(postFactor)), out decimal number)) return Pow10PostFactor(number, postFactor.ToString());
+
+            throw new InvalidCastException();
         }
 
         public string GetDisplayValue(decimal value, int precision, string? Postfactor = null) {
@@ -48,15 +56,40 @@ namespace ValueServiceLib {
         }
 
         public int? GetPotenz(string value) {
-            throw new NotImplementedException();
+            var searchedPostFactor = PostFactors.FirstOrDefault(x => x.TextShort == value);
+            if (searchedPostFactor is null) return null;
+            return searchedPostFactor.Potenz;
         }
 
         public decimal Pow10(decimal value, int potenz) {
-            throw new NotImplementedException();
+
+            if(potenz > 0)
+            {
+                for (int i = 1; i <= potenz; i++)
+                {
+                    value *= 10;
+                }
+            }
+            else
+            {
+                for (int i = -1; i >= potenz; i--)
+                {
+                    value /= 10;
+                }
+            }      
+
+            return value;
         }
 
         public decimal Pow10PostFactor(decimal number, string PostFactor) {
-            throw new NotImplementedException();
+            int? potenz = GetPotenz(PostFactor);
+
+            if (potenz.HasValue)
+            {
+                return Pow10(number, potenz.Value);
+            }
+
+            throw new ArgumentNullException();
         }
     }
 
