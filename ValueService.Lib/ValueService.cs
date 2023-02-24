@@ -52,21 +52,33 @@ namespace ValueServiceLib {
 
         public string GetDisplayValue(decimal value, int precision, string? Postfactor = null) 
         {
+            if(Postfactor is null)
+            {
+
+            }
+            else
+            {
+
+            }
+
             throw new NotImplementedException();
         }
 
         public string GetPostFactor(decimal value) 
         {
+            if(value < 0) value *= -1;
+            if(value >= 1 && value < 1000) return "";
+
             foreach(PostFactor factor in PostFactors)
             {
-                decimal number = Pow10(value, factor.Potenz);
+                decimal number = Pow10(value, -factor.Potenz);
 
-                if(number > 0 && number < 1000)
+                if(number >= 1 && number < 1000)
                 {
                     return factor.TextShort;
                 }
             }
-            throw new ArgumentException();
+            throw new ArgumentOutOfRangeException();
         }
 
         public int? GetPotenz(string value) 
