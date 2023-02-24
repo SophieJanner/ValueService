@@ -71,9 +71,9 @@ namespace ValueServiceLib {
 
             foreach(PostFactor factor in PostFactors)
             {
-                decimal number = Pow10(value, -factor.Potenz);
+                decimal result = Pow10(value, -factor.Potenz);
 
-                if(number >= 1 && number < 1000)
+                if(result >= 1 && result < 1000)
                 {
                     return factor.TextShort;
                 }
