@@ -35,32 +35,50 @@ namespace ValueServiceLib {
 
         public List<IPostFactor> PostFactors { get; set; }
 
-        public decimal GetDecimal(string value) {
+        public decimal GetDecimal(string value) 
+        {
             value = value.Trim().Replace('.', ',');
             
             if(decimal.TryParse(value, out decimal result)) { return result; }
 
-            char postFactor = value.FirstOrDefault(Char.IsLetter);
+            char postFactor = value.FirstOrDefault(Char.IsLetter);    
+
+            if(char.IsNumber(value[value.IndexOf(postFactor) -1]) && char.IsNumber(value[value.IndexOf(postFactor) +1]))
+            value[value.IndexOf(postFactor)] = ',';
 
             if (decimal.TryParse(value.Replace(postFactor.ToString(), ""), out decimal number)) return Pow10PostFactor(number, postFactor.ToString());
             throw new InvalidCastException();
         }
 
-        public string GetDisplayValue(decimal value, int precision, string? Postfactor = null) {
+        public string GetDisplayValue(decimal value, int precision, string? Postfactor = null) 
+        {
             throw new NotImplementedException();
         }
 
-        public string GetPostFactor(decimal value) {
-            throw new NotImplementedException();
+        public string GetPostFactor(decimal value) 
+        {
+            foreach(PostFactor factor in PostFactors)
+            {
+                decimal number = Pow10(value, factor.Potenz);
+
+                if(number > 0 && number < 1000)
+                {
+                    return factor.TextShort;
+                }
+            }
+            throw new ArgumentException();
         }
 
-        public int? GetPotenz(string value) {
-            var searchedPostFactor = PostFactors.FirstOrDefault(x => x.TextShort == value);
+        public int? GetPotenz(string value) 
+        {
+            var searchedPostFactor = PostFactors.FirstOrDefault(x => x.Text == value || x.TextShort == value);
+  
             if (searchedPostFactor is null) return null;
             return searchedPostFactor.Potenz;
         }
 
-        public decimal Pow10(decimal value, int potenz) {
+        public decimal Pow10(decimal value, int potenz) 
+        {
 
             if(potenz > 0)
             {
@@ -80,7 +98,8 @@ namespace ValueServiceLib {
             return value;
         }
 
-        public decimal Pow10PostFactor(decimal number, string PostFactor) {
+        public decimal Pow10PostFactor(decimal number, string PostFactor) 
+        {
             int? potenz = GetPotenz(PostFactor);
 
             if (potenz.HasValue)

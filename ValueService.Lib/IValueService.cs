@@ -52,8 +52,6 @@
         /// <param name="value">decimal value without postfactor</param>
         /// <returns>optimal postfactor for the value (1 character)</returns>
         string GetPostFactor(decimal value);
-
-
     }
 
 
