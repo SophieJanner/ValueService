@@ -43,25 +43,25 @@ namespace ValueServiceLib {
 
             char postFactor = value.FirstOrDefault(Char.IsLetter);    
 
-            if(char.IsNumber(value[value.IndexOf(postFactor) -1]) && char.IsNumber(value[value.IndexOf(postFactor) +1]))
-            value[value.IndexOf(postFactor)] = ',';
-
             if (decimal.TryParse(value.Replace(postFactor.ToString(), ""), out decimal number)) return Pow10PostFactor(number, postFactor.ToString());
             throw new InvalidCastException();
         }
 
         public string GetDisplayValue(decimal value, int precision, string? Postfactor = null) 
         {
-            if(Postfactor is null)
+            if (Postfactor is null)
             {
-
-            }
-            else
-            {
-
+                Postfactor = GetPostFactor(value);
             }
 
-            throw new NotImplementedException();
+            var postFactor = PostFactors.FirstOrDefault(x => x.TextShort == Postfactor);
+
+            if (postFactor is null) return value.ToString();
+
+            decimal result = Math.Round(Pow10(value, -postFactor.Potenz), precision);
+            return $"{result}{Postfactor}";
+            
+            throw new ArgumentNullException();
         }
 
         public string GetPostFactor(decimal value) 
@@ -112,6 +112,8 @@ namespace ValueServiceLib {
 
         public decimal Pow10PostFactor(decimal number, string PostFactor) 
         {
+            if (PostFactor == string.Empty) return number;
+
             int? potenz = GetPotenz(PostFactor);
 
             if (potenz.HasValue)
