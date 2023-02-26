@@ -41,9 +41,12 @@ namespace ValueServiceLib {
             
             if(decimal.TryParse(value, out decimal result)) { return result; }
 
-            char postFactor = value.FirstOrDefault(Char.IsLetter);    
+            char postFactor = value.FirstOrDefault(Char.IsLetter);
+
+            if (value.Last() != postFactor) value = value.Replace(postFactor.ToString(), ",");
 
             if (decimal.TryParse(value.Replace(postFactor.ToString(), ""), out decimal number)) return Pow10PostFactor(number, postFactor.ToString());
+
             throw new InvalidCastException();
         }
 
