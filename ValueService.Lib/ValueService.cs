@@ -59,6 +59,8 @@ namespace ValueServiceLib {
             if (postFactor is null) return value.ToString();
 
             decimal result = Math.Round(Pow10(value, -postFactor.Potenz), precision);
+
+            if(result >= 1000) return $"{result.ToString("n0")}{Postfactor}";
             return $"{result}{Postfactor}";
             
             throw new ArgumentNullException();
