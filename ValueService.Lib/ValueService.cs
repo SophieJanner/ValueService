@@ -47,12 +47,15 @@ namespace ValueServiceLib {
             throw new InvalidCastException();
         }
 
-        public string GetDisplayValue(decimal value, int precision, string? Postfactor = null) 
+        public string GetDisplayValue(decimal value, int precision, string? Postfactor = null)
         {
+            var spostFactors = PostFactors.Select(x => x.TextShort).ToList();
+
             if (Postfactor is null)
             {
                 Postfactor = GetPostFactor(value);
             }
+            else if (!spostFactors.Contains(Postfactor) && Postfactor != string.Empty) throw new ArithmeticException();
 
             var postFactor = PostFactors.FirstOrDefault(x => x.TextShort == Postfactor);
 
@@ -60,12 +63,11 @@ namespace ValueServiceLib {
 
             decimal result = Math.Round(Pow10(value, -postFactor.Potenz), precision);
 
-            if(result >= 1000) return $"{result.ToString("n0")}{Postfactor}";
-            return $"{result}{Postfactor}";
-            
-            throw new ArgumentNullException();
-        }
+            if (result >= 1000) return $"{result.ToString("n0")}{Postfactor}";
 
+            return $"{result}{Postfactor}";
+        }
+        
         public string GetPostFactor(decimal value) 
         {
             if(value < 0) value *= -1;
